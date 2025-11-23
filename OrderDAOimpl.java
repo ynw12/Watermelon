@@ -21,11 +21,12 @@ public class OrderDAOimpl {
                  conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
         	pstmt.setString(1, order.getName());
             pstmt.executeUpdate();
+            //손님 주문 들어올 때 주문번호:no는 1부터 자동 생성
             try(ResultSet generatedKeys = pstmt.getGeneratedKeys()){
             	if(generatedKeys.next()) {
             		int no = generatedKeys.getInt(1);
             		order.setNo(no);
-            		System.out.println(no + "손님 추가 띠띠");
+            		System.out.println(no + "");
             	}
             }
         } catch (SQLException e) {
@@ -33,3 +34,4 @@ public class OrderDAOimpl {
         }
     }
 }
+
