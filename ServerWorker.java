@@ -34,7 +34,7 @@ public class ServerWorker extends Thread {
             while ((msg = in.readLine()) != null) {
                 System.out.println("[SERVER] 수신: " + msg);
 
-                // 1) 주문 생성: NEW_ORDER <메뉴이름>
+                // 1) 주문 생성: NEW_ORDER
                 if (msg.startsWith("NEW_ORDER")) {
                     session = orderService.handleNewOrder(msg, session, out);
                 }
@@ -70,4 +70,5 @@ public class ServerWorker extends Thread {
             System.out.println("[SERVER] 클라이언트 연결 종료: " + socket.getRemoteSocketAddress());
         }
     }
+
 }
