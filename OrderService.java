@@ -17,14 +17,25 @@ public class OrderService {
     }
 
     public ClientSession handleNewOrder(String msg, ClientSession session, PrintWriter out) {
-        //1. DTO 생성 후 DB에 손님 추가
-        OrderDTO dto = new OrderDTO();
-        orderDAO.CreateOrder(dto); 
-        //2. 손님 주문번호생성, 주문 메뉴 넣기
+        //1.대기열 손님 객체 생성
         if (session == null) {
     		session = new ClientSession(out);
     	}
-        session.setNo(dto.getNo()); session.setcafeordername(dto.getName());
+        //2.클라->서버 프로토콜 파싱 -> 주문내역 db에 저장
+        //클라 : NEW_ORDER 아메리카노 (프로토콜양식: NEW_ORDER 주문메뉴명) -> NEW_ORDER는 파싱 필요 없이 서버가 인식 ㄱㄴ하게 했음
+        String[] parts = msg.split("");
+        if (parts.length<3) {
+        	broadcaster.sendTo(session,"Error");
+        	return session;
+        }
+        
+        String menuName = parts[1];
+        
+        OrderDTO dto = new OrderDTO();
+        dto.setName(menuName);
+        
+        orderDAO.CreateOrder(dto); 
+        session.setNo(dto.getNo()); session.setName(dto.getName());
         //3. 손님 대기열에 추가
         queueLogic.addClient(session);
         //4. 대기 손님 수 계산
@@ -32,16 +43,18 @@ public class OrderService {
 
         //5. 손님 콘솔에 출력 -> ORDER 1101 WAITING 1 이런식
         broadcaster.sendTo(session,
-                "ORDER " + session.getno() + " WAITING " + ahead);
+                "ORDER " + session.getNo() + " WAITING " + ahead);
 
-        //6. 메뉴 제조 완료 (1분 설정) -> 손님 대기열에서 제거 후 ORDER_READY 출력
+        //6. 메뉴 제조 완료 (1분 설정, 테스트하다가 변경해도됨) -> 손님 대기열에서 제거 후 주문 완료 알려줌
         orderReady.scheduleOrderReady(session, queueLogic, broadcaster);
 
         return session;
     }
-    //UI에서 GET_STATUS 요청받을 때 사용 -> STATUS 1101 WAITING 1 
+    //UI에서 GET_STATUS 요청받을 때 + 앞 손님 빠질 때 사용
+    //서버 -> 클라 (UI에서 프로토콜 파싱 필요)
+    //서버 : STATUS 1101 WAITING 1 (프로토콜 양식: STATUS 주문번호 WAITING 대기손님수)
     public void handleGetStatus(ClientSession session) {
-        int orderId = session.getno();
+        int orderId = session.getNo();
         int ahead   = queueLogic.getPeopleAhead(session);
 
         broadcaster.sendTo(session,
