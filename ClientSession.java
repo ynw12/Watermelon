@@ -17,14 +17,16 @@ public class ClientSession {
     public void setNo(int no) {
     	this.no = no;
     }
-    public int getno() { 
+    public int getNo() { 
     	return no; 
     }
-    public void setcafeordername(String name) {
+    //주문메뉴명 메소드 변경
+    public void setName(String name) {
     	this.name = name;
     }
-    public String getcafeordername() {
+    public String getName() {
     	return name;
     }
    
+
 }
