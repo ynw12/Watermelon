@@ -16,6 +16,8 @@ public class OrderService {
         this.orderReady = orderReady;
     }
 
+    // [new method] : 각 클라이언트(손님)의 장바구니 가져오기, 출력(UI/콘솔에 보여줄 수 있도록) 메소드 새로 만들기 
+    
     public ClientSession handleNewOrder(String msg, ClientSession session, PrintWriter out) {
         //1.대기열 손님 객체 생성
         if (session == null) {
@@ -61,3 +63,4 @@ public class OrderService {
                 "STATUS " + orderId + " WAITING " + ahead);
     }
 }
+
