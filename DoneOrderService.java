@@ -23,7 +23,7 @@ public class DoneOrderService {
 		}
 	}
 
-	// 기능2. pickup 처리 
+	// 기능2. pickup 안내 
 	// OrderDAO로 key값(no)으로 원하는 주문내역 읽어오기 -> DoneOrderDAO로 가져온 주문내역을 doneorder 테이블에 삽입하기 (moveOrderToDone(no))
 	public void pickUpDoneOrder(int no) {
 		orderDAO.moveOrderToDone(no);
@@ -37,6 +37,7 @@ public class DoneOrderService {
 		System.out.println("손님이 음료를 픽업해갔습니다. 주문 끝!"); 
 	}
 }
+
 
 
 
