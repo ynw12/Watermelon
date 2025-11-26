@@ -15,39 +15,23 @@ public class MenuDAO {
         this.connector = connector;
     }
     // Read : menuboard 테이블의 전체 data select
-    public void ReadMenu () { 
-    	String selectsql = "Select * from menuboard";
-    	try (Connection conn = connector.getConnection();
-        		Statement stmt = conn.createStatement();
-    			ResultSet rs = stmt.executeQuery(selectsql);){
-        	
-        	while(rs.next()) {
-        		String name = rs.getString("name");
-        		int price = rs.getInt("price");
-        		System.out.println("======메뉴판======");
-        		System.out.printf("%s %d\n", name, price);
-        	}
-        } catch (SQLException e) {
-               e.printStackTrace();
-        }
-    }
-    // MenuService에서 메뉴판 조회에 사용할 리스트 생성
     public List<MenuDTO> getAllMenus() {
+        String selectsql = "Select * from menuboard";
         List<MenuDTO> menuList = new ArrayList<>();
-        String selectsql = "SELECT menu, price FROM menuboard";
         
         try (Connection conn = connector.getConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(selectsql)){
                
-               while (rs.next()) {
+               while(rs.next()) {
                    MenuDTO menu = new MenuDTO();
                    menu.setName(rs.getString("name")); 
                    menu.setPrice(rs.getInt("price"));
                    menuList.add(menu);
+                   System.out.println("메뉴판 읽어오는 중...");
                }
            } catch (SQLException e) {
-               System.out.println("[MenuDAO] 메뉴판 조회 중 DB 오류 발생");
+               System.out.println("[MenuDAO] menuboard 테이블 조회 중 DB 오류 발생");
                e.printStackTrace();
            }
            return menuList;
@@ -69,3 +53,4 @@ public class MenuDAO {
 //        }
 //    }
 }
+
