@@ -62,6 +62,40 @@ public class OrderDAOimpl {
             e.printStackTrace();
         }
     }
+
+    // Update : OrderManagement 테이블에 status update
+    // 1. WAITING -> DONE
+    public void updateStatustoDone(int no) {
+    	String updateSql = "update ordermanagement set status = ? where no = ?";
+
+		try (Connection conn = connector.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(updateSql);){
+			pstmt.setString(1, "DONE");
+			pstmt.setInt(2, no);
+			pstmt.executeUpdate();
+			System.out.println("주문번호 "+no+"번의 상태가 DONE으로 업데이트 되었습니다.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("[OrderDAO] StatustoDone 업데이트 실패");
+		}
+    } 
+    
+    // 2. DONE -> PICKUP
+    public void updateStatustoPickUp(int no) {
+    	String updateSql = "update ordermanagement set status = ? where no = ?";
+
+		try (Connection conn = connector.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(updateSql);){
+			pstmt.setString(1, "PICKUP");
+			pstmt.setInt(2, no);
+			pstmt.executeUpdate();
+			System.out.println("주문번호 "+no+"번의 상태가 PICKUP으로 업데이트 되었습니다.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("[OrderDAO] StatustoPickUp 업데이트 실패");
+		}
+    }   
 }
+
 
 
