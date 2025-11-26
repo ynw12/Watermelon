@@ -12,7 +12,8 @@ public class DoneOrderDTO {
 	public String getDoneName() {
 		return doneName;
 	}
-	public void setDoneName(String donename) {
+	public void setDoneName(String doneName) {
 		this.doneName = doneName;
 	}
 }
+
