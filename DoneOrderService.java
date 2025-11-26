@@ -3,8 +3,9 @@ package Server_v1;
 import java.util.List;
 
 public class DoneOrderService {
-	private final DatabaseConnector connector; 
+	// private final DatabaseConnector connector; 
 	private final OrderDAOimpl orderDAO;
+	private final DoneOrderDAO doneOrderDAO;
 	/*public DoneOrderService(DatabaseConnector connector) {
 		this.connector = connector;
 	}*/
@@ -31,4 +32,5 @@ public class DoneOrderService {
 	}
 
 }
+
 
