@@ -34,16 +34,12 @@ public class OrderDAOimpl {
     }
     public void moveOrderToDone(int no) {
         String insertSql = "INSERT INTO doneorder (doneno, donename) " + "SELECT no, name FROM ordermanagement WHERE no = ?";
-        // String deleteSql = "DELETE FROM ordermanagement WHERE no = ?";
 
         try (Connection conn = connector.getConnection()) {
             conn.setAutoCommit(false);
 
-            try (PreparedStatement insertPstmt = conn.prepareStatement(insertSql);
-                 // PreparedStatement deletePstmt = conn.prepareStatement(deleteSql)
-																					) {
-
-                // ordermanagement에서 doneorder로 data 복사
+            try (PreparedStatement insertPstmt = conn.prepareStatement(insertSql);) {
+                // ordermanagement에서 doneorder로 data 복사 
                 insertPstmt.setInt(1, no);
                 insertPstmt.executeUpdate();
 
@@ -92,6 +88,7 @@ public class OrderDAOimpl {
 		}
     }   
 }
+
 
 
 
