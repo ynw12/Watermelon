@@ -48,7 +48,7 @@ public class OrderService {
                 "ORDER " + session.getNo() + " WAITING " + ahead);
 
         //6. 메뉴 제조 완료 (1분 설정, 테스트하다가 변경해도됨) -> 손님 대기열에서 제거 후 주문 완료 알려줌
-        orderReady.scheduleOrderReady(session, queueLogic, broadcaster);
+        orderReady.scheduleOrderReady(session, queueLogic, broadcaster, orderDAO);
 
         return session;
     }
@@ -63,4 +63,5 @@ public class OrderService {
                 "STATUS " + orderId + " WAITING " + ahead);
     }
 }
+
 
