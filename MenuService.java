@@ -4,12 +4,15 @@ import java.util.List;
 
 public class MenuService {
 	// menuboard 전체 출력
-	public void showAllMenus(MenuDAO menuDAO) {
+	public void showAllMenus(PrintWriter out, MenuDAO menuDAO) {
 		List<MenuDTO> menuList = menuDAO.getAllMenus();
+		//print -> out 형태로 바꿈 : out.print로 해야 메세지 오갈 수 있음
+		out.println("======메뉴판======");
+		out.println();
 		for(MenuDTO mnDTO : menuList) {
-    		System.out.println("======메뉴판======");
-			System.out.println();
-    		System.out.printf("메뉴 : "+mnDTO.getName()+" 가격 : "+mnDTO.getPrice()+"원");
+    		out.printf("메뉴 : "+mnDTO.getName()+" 가격 : "+mnDTO.getPrice()+"원");
 		}
+		out.println();
 	}
+
 }
