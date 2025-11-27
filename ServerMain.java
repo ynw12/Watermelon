@@ -9,7 +9,9 @@ public class ServerMain {
 	   private static final Order_Ready orderready = new Order_Ready();
 	   private static final DatabaseConnector connector = new DatabaseConnector();
 	   private static final OrderDAOimpl orderDAO = new OrderDAOimpl(connector);
-	   private static final OrderService orderservice = new OrderService(orderDAO, queueLogic, broadcaster, orderready);
+	   private static final DoneOrderDAO doneorderDAO = new DoneOrderDAO(connector);
+	   private static final OrderService orderservice = new OrderService(orderDAO, queueLogic, broadcaster,orderready);
+	   private static final DoneOrderService doneorderservice = new DoneOrderService(orderDAO, doneorderDAO, broadcaster);
 
 	   public static void main(String[] args) {
 	        try (ServerSocket serverSocket = new ServerSocket(50023)) {
@@ -21,7 +23,7 @@ public class ServerMain {
 
 	      
 	                ServerWorker worker =
-	                    new ServerWorker(socket, orderservice);
+	                    new ServerWorker(socket, orderservice, doneorderservice);
 
 	                worker.start();
 	            }
