@@ -30,13 +30,14 @@ public class DoneOrderService {
         String[] parts = msg.split(" ");
         int no = Integer.parseInt(parts[1]);
         orderDAO.updateStatustoPickUp(no);
-        OrderDTO orderDTO = new OrderDTO(no);
+        OrderDTO orderDTO = orderDAO.getOrderByNo(no);
         String Status = orderDTO.getStatus();
         doneOrderDAO.deleteDoneOrder(no);
         
         broadcaster.sendTo(client, Status + no);
 	}
 }
+
 
 
 
