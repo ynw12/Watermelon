@@ -15,7 +15,7 @@ public class DoneOrderDAO {
 	}
 	// Read : doneorder 테이블의 완료된 번호,주문들 select
 	public List<DoneOrderDTO> getAllDoneOrders() { 
-    	String selectsql = "Select doneNo, doneName from doneorder";
+    	String selectsql = "Select doneno, donename from doneorder";
     	List<DoneOrderDTO> doneOrderList = new ArrayList<>();
     	
     	try (Connection conn = connector.getConnection();
@@ -24,8 +24,8 @@ public class DoneOrderDAO {
         	
         	while(rs.next()) {
         		DoneOrderDTO DoneOrders = new DoneOrderDTO();
-        		DoneOrders.setDoneNo(rs.getInt("doneNo"));
-        		DoneOrders.setDoneName(rs.getString("doneName"));
+        		DoneOrders.setDoneNo(rs.getInt("doneno"));
+        		DoneOrders.setDoneName(rs.getString("donename"));
         		doneOrderList.add(DoneOrders);
         		System.out.println("주문완료 내역을 읽어오는 중...");
         	}
@@ -66,3 +66,4 @@ public class DoneOrderDAO {
 		}
     }   
 }
+
