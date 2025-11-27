@@ -54,6 +54,24 @@ public class OrderDAOimpl {
             e.printStackTrace();
         }
     }
+	public OrderDTO getOrderByNo(int no) { 
+    	String selectsql = "Select no, name, status" + "FROM ordermanagement WHERE no = ?";
+    	OrderDTO dto = new OrderDTO();
+    	
+    	try (Connection conn = connector.getConnection();
+    			Statement stmt = conn.createStatement();
+    			ResultSet rs = stmt.executeQuery(selectsql);){
+        
+        		dto.setNo(no);
+        		dto.setName(rs.getString("name"));
+        		dto.setStatus(rs.getString("status"));
+        		
+        } catch (SQLException e) {
+               e.printStackTrace();
+               System.out.println("[DoneOrderDAO] DoneOrder 테이블 조회 중 DB 오류 발생");
+        }
+    	return dto;
+    }
 
     // Update : OrderManagement 테이블에 status update
     // 1. WAITING -> DONE
@@ -88,6 +106,7 @@ public class OrderDAOimpl {
 		}
     }   
 }
+
 
 
 
