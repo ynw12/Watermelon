@@ -3,6 +3,10 @@ package Server_v1;
 public class DoneOrderDTO {
 	private int doneNo;
 	private String doneName;
+	public DoneOrderDTO() {};
+	public DoneOrderDTO(int no) {
+		this.doneNo= no;
+	}
 	public int getDoneNo() {
 		return doneNo;
 	}
@@ -16,4 +20,5 @@ public class DoneOrderDTO {
 		this.doneName = doneName;
 	}
 }
+
 
