@@ -6,6 +6,9 @@ public class OrderDTO {
 	 private String status;
 	
 	 public OrderDTO() {};
+	 public OrderDTO(int no) {
+		 this.no = no;
+	 }
 	 public OrderDTO(String name) {
 	     this.name = name;
 	  }
@@ -39,4 +42,5 @@ public class OrderDTO {
 		this.status = status;
 	 }
 }
+
 
