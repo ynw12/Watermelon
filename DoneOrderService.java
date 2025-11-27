@@ -6,35 +6,35 @@ public class DoneOrderService {
 	// private final DatabaseConnector connector; 
 	private final OrderDAOimpl orderDAO;
 	private final DoneOrderDAO doneOrderDAO;
+	private final ServerBroadcaster broadcaster;
 	/*public DoneOrderService(DatabaseConnector connector) {
 		this.connector = connector;
 	}*/
-	public DoneOrderService(OrderDAOimpl orderDAO,DoneOrderDAO doneOrderDAO){
+	public DoneOrderService(OrderDAOimpl orderDAO,DoneOrderDAO doneOrderDAO,ServerBroadcaster broadcaster){
 		this.orderDAO = orderDAO;
 		this.doneOrderDAO = doneOrderDAO;
+		this.broadcaster = broadcaster;
 	}
+	
 	
 	// 기능1. 완료된 주문내역 전체 출력
-	public void showDoneOrder() {
+	public void showDoneOrder(StaffSession staff) {
 		List<DoneOrderDTO> doneOrderList = doneOrderDAO.getAllDoneOrders();
+		broadcaster.sendTo(staff, "======완료된 주문 내역======");
 		for(DoneOrderDTO doDTO : doneOrderList) {
-			System.out.println("======완료된 주문 내역======");
-			System.out.printf(doDTO.getDoneNo()+"번 손님, "+doDTO.getDoneName()+"완료되었습니다!\n");
+			broadcaster.sendTo(staff, doDTO.getDoneNo()+"번 손님, "+doDTO.getDoneName()+"완료되었습니다!\n");
 		}
 	}
-
-	// 기능2. pickup 안내 
-	// OrderDAO로 key값(no)으로 원하는 주문내역 읽어오기 -> DoneOrderDAO로 가져온 주문내역을 doneorder 테이블에 삽입하기 (moveOrderToDone(no))
-	public void pickUpDoneOrder(int no) {
-		orderDAO.moveOrderToDone(no);
-		System.out.println("메뉴가 완료되었습니다! 픽업대에서 음료를 픽업해주세요"); 
-	}
-	
-	// 기능 3. pickup 후 삭제(픽업 완료된 주문 처리) 
-	// 관리자 UI에서 픽업완료 신호를 주면 -> key값(no)으로 원하는 주문내역을 doneorder 테이블에서 삭제 
-	public void DonePickUp(int no) {
-		doneOrderDAO.deleteDoneOrder(no);	
-		System.out.println("손님이 음료를 픽업해갔습니다. 주문 끝!"); 
+	// 기능 2. 픽업 후 삭제 (기존 기능 2 - 손님한테 픽업 알리고 doneorder로 손님 옮기는 코드를 order_ready로 이동시킴)
+	public void handleStaffPickup(String msg, ClientSession client) {
+        String[] parts = msg.split(" ");
+        int no = Integer.parseInt(parts[1]);
+        orderDAO.updateStatustoPickUp(no);
+        OrderDTO orderDTO = new OrderDTO(no);
+        String Status = orderDTO.getStatus();
+        doneOrderDAO.deleteDoneOrder(no);
+        
+        broadcaster.sendTo(client, Status + no);
 	}
 }
 
