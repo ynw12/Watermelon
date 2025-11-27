@@ -60,24 +60,15 @@ public class ServerWorker extends Thread {
 
                 //관리자 명령 처리 -> 프로토콜 확인
                 if (staffSession != null) {
-                    switch (cmd) {
-                        case "STAFF_GET_DONE":
-                            // 제조 완료(DONE) 상태이면서 아직 픽업 안 된 손님 목록 보내기
-                            doneorderService.showDoneOrder(staffSession);
-                            break;
-
-                        case "PICKUP":
-                            // 
-                            doneorderService.handleStaffPickup(msg, clientSession);
-                            break;
-
-                        case "DISCONNECT":
-                            System.out.println("[SERVER] STAFF DISCONNECT 요청");
-                            return; // run() 종료 → finally에서 소켓 정리
-
-                        default:
-                            out.println("ERROR_STAFF");
-                            break;
+                    if (msg.equals("STAFF_GET_DONE"))
+                		doneorderService.showDoneOrder(staffSession);
+                	else if (msg.startsWith("PICKUP"))
+                		doneorderService.handleStaffPickup(msg, clientSession);
+                	else if (msg.equals("DISCONNECT")) {
+                		System.out.println("[SERVER] STAFF DISCONNECT 요청");
+                      	break;}
+                	else {
+                		out.println("ERROR_STAFF");
                     }
                     continue;
                 }
@@ -119,3 +110,4 @@ public class ServerWorker extends Thread {
         }
     }
 }
+
