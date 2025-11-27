@@ -2,7 +2,7 @@ package Server_v1;
 
 import java.io.PrintWriter;
 
-public class ClientSession {
+public class ClientSession implements Session{
     private final PrintWriter out;   // 이 손님에게 메시지 보낼 통로
     private int no; //주문번호
     private String name;//주문한 메뉴명
@@ -34,3 +34,4 @@ public class ClientSession {
     }
    
 }
+
