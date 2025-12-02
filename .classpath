@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="src/" kind="src" path=""/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/LG/.gradle/caches/modules-2/files-2.1/org.hibernate.orm/hibernate-core/7.1.8.Final/57be444bca9f8a6091e9ed82c1cc14e57095664d/hibernate-core-7.1.8.Final.jar" sourcepath="C:/Users/LG/.gradle/caches/modules-2/files-2.1/org.hibernate.orm/hibernate-core/7.1.8.Final/7fa8bbfaad43cea8562e35aaac2416fd814232ea/hibernate-core-7.1.8.Final-sources.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-24">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
