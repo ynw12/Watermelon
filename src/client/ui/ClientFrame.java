@@ -242,6 +242,11 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
             JOptionPane.showMessageDialog(this, "장바구니에 추가할 메뉴를 선택하세요.");
             return;
         }
+        if (cartModel.getSize() >= 1) {
+            JOptionPane.showMessageDialog(this, "장바구니에는 한 개의 메뉴만 담을 수 있습니다.");
+            return;
+        }
+        
         cartModel.addElement(selected);
         updateTotalPrice();
     }
@@ -507,6 +512,13 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
         }
         lblPeopleAhead.setText("앞에 대기 중인 손님 수: " + currentOrder.getPeopleAhead());
         lblStatusText.setText("상태: " + currentOrder.getStatus());
+        
+        if (currentOrder.getStatus() == OrderStatus.DONE) {
+        	if(statusTimer != null && statusTimer.isRunning()) {
+        		statusTimer.stop();
+        		appendLog("[SYSTEM] 주문이 완료되었습니다.");
+        	}
+        }
     }
 
     private void clearOrderDisplay() {
