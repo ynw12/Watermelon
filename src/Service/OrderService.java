@@ -103,7 +103,20 @@ public class OrderService {
         String message = "STATUS " + orderId + " " + status + " " + ahead;
         broadcaster.sendTo(session, message);
     }
+
+    // ordermanagement 테이블 전체 출력
+ 	public void showAllOrders(PrintWriter out) {
+ 		List<OrderDTO> orderList = orderDAO.getAllOrders();
+
+ 		out.println("======주문내역======");
+ 		for(OrderDTO order : orderList) {
+     		out.printf("번호 : "+order.getNo()+" | 메뉴 : "+order.getName()+" | 상태 : "+order.getStatus()+"\n");
+ 		}
+ 		// out.println("order1");
+ 	}
+    
 }
+
 
 
 
