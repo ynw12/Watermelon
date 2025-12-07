@@ -19,7 +19,7 @@ public class PickupItem {
 	
 	@Override
     public String toString() {
-        return String.format("번호: %d | 메뉴: %s ", no, name);
+        return String.format("완료: %d번 손님, %s 픽업하세요!", no, name);
     }
 	public PickupItem(int no, String name) {
 		super();

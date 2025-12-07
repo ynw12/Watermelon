@@ -1,11 +1,11 @@
 package DB;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAOimpl {
@@ -79,8 +79,7 @@ public class OrderDAOimpl {
             e.printStackTrace();
             System.out.println("[OrderDAO] ordermanagement 조회 중 DB 오류 발생");
             return null;
-        } // Update : OrderManagement 테이블에 status update
-   
+        } 
     }
 
 	// Read : ordermanagement 테이블의 전체 data select
