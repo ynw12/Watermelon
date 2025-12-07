@@ -32,6 +32,6 @@ public class OrderItem {
 	
 	@Override
     public String toString() {
-        return String.format("번호: %d | 메뉴: %s | 상태: %s", no, name, status);
+        return String.format("번호: %d, 메뉴: %s, 상태: %s", no, name, status);
     }
 }
