@@ -62,8 +62,8 @@ public class StaffConnection {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                } finally {
-                    isConnected = false;
+                } finally {                 
+                	isConnected = false;                	
 
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
@@ -93,6 +93,7 @@ public class StaffConnection {
  
     // staffGetDone 요청 
     public void staffPickupOk(String no) {
+    	System.out.printf("staffPickupOk() : no = %s", no);
     	sendMessage("PICKUP "+no); 
     }
  
