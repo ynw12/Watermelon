@@ -27,7 +27,7 @@ public class DoneOrderService {
 		List<DoneOrderDTO> doneOrderList = doneOrderDAO.getAllDoneOrders();
 		broadcaster.sendTo(staff, "======완료된 주문 내역======");
 		for(DoneOrderDTO doDTO : doneOrderList) {
-			broadcaster.sendTo(staff, doDTO.getDoneNo()+" | "+doDTO.getDoneName()+" | DONE\n");
+			broadcaster.sendTo(staff, "완료 : " + doDTO.getDoneNo()+"|"+doDTO.getDoneName());
 		}
 	}
 	// 기능 2. 픽업 후 삭제 (기존 기능 2 - (손님한테 픽업 알리고) doneorder로 손님 옮기는 코드를 order_ready로 이동시킴)
@@ -39,6 +39,7 @@ public class DoneOrderService {
 	}
 
 }
+
 
 
 

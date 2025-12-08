@@ -18,11 +18,9 @@ public class MenuService {
 		List<MenuDTO> menuList = menuDAO.getAllMenus();
 
 		out.println("======메뉴판======");
-		out.println();
 		for(MenuDTO mnDTO : menuList) {
-    		out.printf("메뉴 : "+mnDTO.getName()+"| 가격 : "+mnDTO.getPrice()+"원\n");
+    		out.printf("메뉴 : "+mnDTO.getName()+" | 가격 : "+mnDTO.getPrice()+"원\n");
 		}
-		out.println();
 	}
 
 }
