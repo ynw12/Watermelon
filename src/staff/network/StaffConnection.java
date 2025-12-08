@@ -93,6 +93,7 @@ public class StaffConnection {
  
     // staffGetDone 요청 
     public void staffPickupOk(String no) {
+    	// System.out.printf("staffPickupOk() : no = %s", no);
     	sendMessage("PICKUP "+no); 
     }
  

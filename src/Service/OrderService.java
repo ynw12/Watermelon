@@ -21,7 +21,7 @@ public class OrderService {
                         ClientQueueLogic queueLogic,
                         ServerBroadcaster broadcaster,
                         Order_Ready orderReady) {
-        this.orderDAO = orderDAO;
+    	this.orderDAO = orderDAO;
         this.queueLogic = queueLogic;
         this.broadcaster = broadcaster;
         this.orderReady = orderReady;
@@ -110,7 +110,7 @@ public class OrderService {
 
  		out.println("======주문내역======");
  		for(OrderDTO order : orderList) {
-     		out.printf("번호 : "+order.getNo()+" | 메뉴 : "+order.getName()+" | 상태 : "+order.getStatus()+"\n");
+     		out.printf("번호 : "+order.getNo()+"+"+order.getName()+"|"+order.getStatus()+"\n");
  		}
  		// out.println("order1");
  	}
