@@ -42,7 +42,6 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
     // 장바구니(오른쪽)
     private DefaultListModel<MenuItem> cartModel;
     private JList<MenuItem> cartList;
-    private JLabel lblTotalPrice;
 
     // 오른쪽 사이드바: 주문번호/대기 인원/상태 표시 라벨
     private JLabel lblOrderId;
@@ -117,7 +116,7 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
         menuPanel.add(lblMenuTitle, BorderLayout.NORTH);
 
         menuModel = new DefaultListModel<MenuItem>();
-        menuList = new JList<MenuItem>(menuModel);
+        menuList = new JList<>(menuModel);
         menuPanel.add(new JScrollPane(menuList), BorderLayout.CENTER);
 
         JButton btnAddToCart = new JButton("장바구니에 추가");
@@ -137,11 +136,10 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
         cartPanel.add(lblCartTitle, BorderLayout.NORTH);
 
         cartModel = new DefaultListModel<MenuItem>();
-        cartList = new JList<MenuItem>(cartModel);
+        cartList = new JList<>(cartModel);
         cartPanel.add(new JScrollPane(cartList), BorderLayout.CENTER);
 
         JPanel cartBottom = new JPanel();
-        lblTotalPrice = new JLabel("총 금액: 0원");
 
         JButton btnRemove = new JButton("선택 삭제");
         btnRemove.addActionListener(new ActionListener() {
@@ -159,7 +157,6 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
             }
         });
 
-        cartBottom.add(lblTotalPrice);
         cartBottom.add(btnRemove);
         cartBottom.add(btnPay);
 
@@ -250,7 +247,6 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
         }
         
         cartModel.addElement(selected);
-        updateTotalPrice();
     }
 
     // 장바구니 삭제
@@ -258,18 +254,7 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
         int index = cartList.getSelectedIndex();
         if (index >= 0) {
             cartModel.remove(index);
-            updateTotalPrice();
         }
-    }
-
-    // 장바구니에 들어간 메뉴들의 가격 합계 출력
-    private void updateTotalPrice() {
-        int sum = 0;
-        int size = cartModel.size();
-        for (int i = 0; i < size; i++) {
-            sum += cartModel.getElementAt(i).getPrice();
-        }
-        lblTotalPrice.setText("총 금액: " + sum + "원");
     }
 
     private void sendOrder() {
