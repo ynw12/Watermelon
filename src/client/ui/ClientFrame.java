@@ -26,6 +26,8 @@ import client.model.OrderInfo;
 import client.model.OrderStatus;
 import client.network.ClientConnection;
 import client.network.ClientMessageListener;
+import client.ui.utils.ProtocolParser;
+import client.ui.utils.ClientMessageHandler;
 
 public class ClientFrame extends JFrame implements ClientMessageListener {
 
@@ -281,7 +283,7 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
         }
 
         MenuItem first = cartModel.getElementAt(0);
-        String menuName = first.getName(); // DB MenuBoard.name과 동일하게 관리하는 것이 좋음
+        String menuName = first.getName();
 
         connection.sendNewOrder(menuName);
         appendLog("[CLIENT] NEW_ORDER " + menuName + " 전송");
@@ -313,33 +315,35 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
     public void onMessage(String msg) {
         appendLog("[SERVER] " + msg);
 
-        if (msg.startsWith("======메뉴판======")) {
-            // 메뉴 목록 수신 시작
-            isReceivingMenu = true;
-            menuModel.clear();  // 이전 메뉴 비우기
-            appendLog("[SYSTEM] 메뉴판 수신 시작");
-            return;
+        if (ProtocolParser.isMenuHeader(msg)) {
+        	isReceivingMenu = true;
+        	menuModel.clear();
+        	appendLog("[SYSTEM] 메뉴판 수신 시작");
+        	return;
         }
-
-        // 메뉴 내용 라인
-        if (isReceivingMenu && msg.startsWith("메뉴")) {
-            MenuItem parsed = parseMenuLine(msg);
-            if (parsed != null) {
-                menuModel.addElement(parsed);
-            }
-            return;
+        
+        if (isReceivingMenu && ProtocolParser.isMenuLine(msg)) {
+        	MenuItem parsed = ProtocolParser.parseMenuLine(msg);
+        	if(parsed != null) {
+        		menuModel.addElement(parsed);
+        	} else {
+        		appendLog("[파싱에러] 메뉴 라인 해석 실패: " + msg);
+        	}
+        	return;
         }
-
-        if (isReceivingMenu && msg.trim().isEmpty()) {
+        
+        if (isReceivingMenu && ProtocolParser.isMenuEnd(msg)) {
             isReceivingMenu = false;
             appendLog("[SYSTEM] 메뉴판 수신 종료");
             return;
         }
+        
+        // 상태 관련
         if (msg.startsWith("PICKUP")) {
             handlePickupCompactMessage(msg);
             return;
         }
-        
+
         String[] parts = msg.split(" ");
         if (parts.length == 0) {
             return;
@@ -356,7 +360,7 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
             // 형식: STATUS 주문번호 상태 대기인원수
             handleStatusMessage(parts);
         } else if ("DONE".equals(cmd)) {
-            // 형식: DONE 주문번호 메뉴명
+            // 형식: DONE 주문번호 메뉴명...
             handleDoneMessage(parts);
         } else {
             // 그 밖의 메시지(에러 등)
@@ -376,35 +380,22 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
 
     // 서버 메시지 처리
     private void handleOrderMessage(String[] parts) {
-        if (parts.length < 4) {
-            return;
+        boolean success = ClientMessageHandler.applyOrderMessage(parts, currentOrder);
+        if (!success) {
+        	appendLog("[SYSTEM] ORDER 메시지 형식 오류");
+        	return;
         }
-
-        int orderId = parseIntSafe(parts[1]);
-        String statusStr = parts[2]; 
-        int ahead = parseIntSafe(parts[3]);
-
-        currentOrder.setOrderId(orderId);
-        currentOrder.setStatus(parseStatus(statusStr));
-        currentOrder.setPeopleAhead(ahead);
 
         updateOrderDisplay();
     }
 
     private void handleStatusMessage(String[] parts) {
-        // STATUS 주문번호 상태 대기인원수
-        if (parts.length < 4) {
-            return;
+        boolean success = ClientMessageHandler.applyOrderMessage(parts, currentOrder);
+        if (!success) {
+        	appendLog("[SYSTEM] STATUS 메시지 형식 오류");
+        	return;
         }
-
-        int orderId = parseIntSafe(parts[1]);
-        String statusStr = parts[2]; // WAITING / DONE / PICKUP
-        int ahead = parseIntSafe(parts[3]);
-
-        currentOrder.setOrderId(orderId);
-        currentOrder.setStatus(parseStatus(statusStr));
-        currentOrder.setPeopleAhead(ahead);
-
+        
         updateOrderDisplay();
     }
 
@@ -414,9 +405,8 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
             return;
         }
 
-        int orderId = parseIntSafe(parts[1]);
-
-        String menuName = joinTokensFrom(parts, 2);
+        int orderId = ProtocolParser.parseInt(parts[1]);
+        String menuName = ProtocolParser.joinTokensFrom(parts, 2);
 
         currentOrder.setOrderId(orderId);
         currentOrder.setStatus(OrderStatus.DONE);
@@ -438,7 +428,7 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
         String prefix = "PICKUP";
         String numPart = msg.substring(prefix.length());
 
-        int orderId = parseIntSafe(numPart);
+        int orderId = ProtocolParser.parseInt(numPart);
 
         currentOrder.setOrderId(orderId);
         currentOrder.setStatus(OrderStatus.PICKUP);
@@ -460,48 +450,6 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
     private void handleMiscMessage(String msg) {
         if (msg.startsWith("ERROR")) {
             JOptionPane.showMessageDialog(this, "서버 오류: " + msg);
-        }
-    }
-
-    // 서버에서 받아오는 메뉴 라인 파싱
-    private MenuItem parseMenuLine(String line) {
-        try {
-            if (line == null) {
-                return null;
-            }
-            line = line.trim();
-            if (!line.startsWith("메뉴")) {
-                return null;
-            }
-
-            int nameStart = line.indexOf("메뉴 :");
-            int priceStart = line.indexOf("가격 :");
-
-            if (nameStart == -1 || priceStart == -1) {
-                return null;
-            }
-
-            // "메뉴 :" 와 "가격 :" 사이가 메뉴명
-            String namePart =
-                line.substring(nameStart + "메뉴 :".length(), priceStart).trim();
-
-            // "가격 :" 이후부터 "원" 앞까지가 가격
-            int wonIndex = line.indexOf("원", priceStart);
-            String pricePart;
-            if (wonIndex == -1) {
-                pricePart =
-                    line.substring(priceStart + "가격 :".length()).trim();
-            } else {
-                pricePart =
-                    line.substring(priceStart + "가격 :".length(), wonIndex).trim();
-            }
-
-            int price = Integer.parseInt(pricePart);
-
-            return new MenuItem(namePart, price);
-        } catch (Exception e) {
-            appendLog("[파싱에러] 메뉴 라인 해석 실패: " + line);
-            return null;
         }
     }
 
@@ -531,42 +479,7 @@ public class ClientFrame extends JFrame implements ClientMessageListener {
         txtServerLog.append(text + "\n");
         txtServerLog.setCaretPosition(txtServerLog.getDocument().getLength());
     }
-
-    private int parseIntSafe(String s) {
-        try {
-            return Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
-
-    private OrderStatus parseStatus(String s) {
-        if ("WAITING".equalsIgnoreCase(s)) {
-            return OrderStatus.WAITING;
-        }
-        if ("DONE".equalsIgnoreCase(s)) {
-            return OrderStatus.DONE;
-        }
-        if ("PICKUP".equalsIgnoreCase(s)) {
-            return OrderStatus.PICKUP;
-        }
-        return OrderStatus.UNKNOWN;
-    }
-
-    // 배열 parts에서 startIndex부터 끝까지를 공백으로 이어붙인 문자열을 반환.
-    // 예: ["DONE", "1101", "아이스", "아메리카노"], startIndex=2 → "아이스 아메리카노"
-    private String joinTokensFrom(String[] parts, int startIndex) {
-        if (startIndex >= parts.length) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        int i;
-        for (i = startIndex; i < parts.length; i++) {
-            if (i > startIndex) {
-                sb.append(" ");
-            }
-            sb.append(parts[i]);
-        }
-        return sb.toString();
-    }
+    
 }
+
+
