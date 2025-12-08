@@ -11,8 +11,10 @@ public class STAFF_HELLO implements Command {
 		StaffSession staffSession = new StaffSession(worker.getOut());
 		// TODO Auto-generated method stub
 		worker.setStaffSession(staffSession);
-        worker.getOut().println("STAFF_LOGIN");
+        // worker.getOut().println("STAFF_LOGIN");
         System.out.println("[SERVER] Staff 세션 생성");
+        
+        worker.getOrderService().showAllOrders(worker.getOut());
 	}
 
 }

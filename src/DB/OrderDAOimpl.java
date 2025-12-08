@@ -1,11 +1,11 @@
 package DB;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAOimpl {
@@ -79,10 +79,33 @@ public class OrderDAOimpl {
             e.printStackTrace();
             System.out.println("[OrderDAO] ordermanagement 조회 중 DB 오류 발생");
             return null;
-        } // Update : OrderManagement 테이블에 status update
-   
+        } 
     }
-    
+
+	// Read : ordermanagement 테이블의 전체 data select
+    public List<OrderDTO> getAllOrders() {
+        String selectsql = "Select * from ordermanagement";
+        List<OrderDTO> orderList = new ArrayList<>();
+        
+        try (Connection conn = connector.getConnection(); 
+                Statement stmt = conn.createStatement(); 
+                ResultSet rs = stmt.executeQuery(selectsql)){
+               
+               System.out.println("전체 주문 내역 읽어오는 중...");
+               while(rs.next()) {
+                   OrderDTO order = new OrderDTO();
+                   order.setNo(rs.getInt("no"));
+                   order.setName(rs.getString("name")); 
+                   order.setStatus(rs.getString("status"));
+                   orderList.add(order);
+               }
+           } catch (SQLException e) {
+               System.out.println("[OrderDAO] ordermanagement 테이블 READ 중 DB 오류 발생");
+               e.printStackTrace();
+           }
+           return orderList;
+    }
+
     // Update : OrderManagement 테이블에 status update
     // 1. WAITING -> DONE
     public void updateStatustoDone(int no) {
@@ -116,6 +139,7 @@ public class OrderDAOimpl {
 		}
     }   
 }
+
 
 
 

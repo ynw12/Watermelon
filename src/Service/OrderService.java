@@ -21,7 +21,7 @@ public class OrderService {
                         ClientQueueLogic queueLogic,
                         ServerBroadcaster broadcaster,
                         Order_Ready orderReady) {
-        this.orderDAO = orderDAO;
+    	this.orderDAO = orderDAO;
         this.queueLogic = queueLogic;
         this.broadcaster = broadcaster;
         this.orderReady = orderReady;
@@ -103,7 +103,20 @@ public class OrderService {
         String message = "STATUS " + orderId + " " + status + " " + ahead;
         broadcaster.sendTo(session, message);
     }
+
+    // ordermanagement 테이블 전체 출력
+ 	public void showAllOrders(PrintWriter out) {
+ 		List<OrderDTO> orderList = orderDAO.getAllOrders();
+
+ 		out.println("======주문내역======");
+ 		for(OrderDTO order : orderList) {
+     		out.printf("번호 : "+order.getNo()+"+"+order.getName()+"|"+order.getStatus()+"\n");
+ 		}
+ 		// out.println("order1");
+ 	}
+    
 }
+
 
 
 
