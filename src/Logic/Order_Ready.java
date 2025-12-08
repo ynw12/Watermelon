@@ -10,7 +10,7 @@ public class Order_Ready {
 	 '일정 시간 후' 또는 '주기적'으로 command(작업)를 실행시켜 줄 수 있는 녀석이다.
 	 블로그에서 찾아본 기능이에요*/
     private final ScheduledExecutorService scheduler =
-            Executors.newScheduledThreadPool(10);
+            Executors.newScheduledThreadPool(30);
 
     public void scheduleOrderReady(ClientSession session, ClientQueueLogic queueLogic, ServerBroadcaster broadcaster, OrderDAOimpl orderDAO) {
         // 주문 완료 후 서버가 메뉴 완료 ORDER_READY 실행해줌
@@ -41,3 +41,4 @@ public class Order_Ready {
         }, 1, TimeUnit.MINUTES); // 일단은 1분 설정 하고 나중에 테스트 해보다 수정 ㄱㄱ
     }
 }
+
