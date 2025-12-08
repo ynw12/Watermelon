@@ -1,4 +1,4 @@
-package Staff.ui;
+package staff.ui;
 
 import java.awt.BorderLayout;          
 import java.awt.Dimension;
@@ -21,9 +21,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-import Staff.model.OrderItem;
-import Staff.model.PickupItem;
-import Staff.network.StaffConnection;
+import staff.model.OrderItem;
+import staff.model.PickupItem;
+import staff.network.StaffConnection;
 import client.network.ClientMessageListener;
 
 public class StaffFrame extends JFrame implements ClientMessageListener {

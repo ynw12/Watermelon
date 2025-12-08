@@ -1,4 +1,4 @@
-package Staff.ui;
+package staff.ui;
 
 import javax.swing.SwingUtilities;
 

@@ -1,4 +1,4 @@
-package Staff.model;
+package staff.model;
 
 public class OrderItem {
 	private int no;
