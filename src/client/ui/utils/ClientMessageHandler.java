@@ -17,11 +17,11 @@ public class ClientMessageHandler {
 		
 		int orderId = ProtocolParser.parseInt(parts[1]);
 		String status = parts[2];
-		int ahead = ProtocolParser.parseInt(parts[3]);
+		int peopleAhead = ProtocolParser.parseInt(parts[3]);
 		
 		order.setOrderId(orderId);
 		order.setStatus(ProtocolParser.parseStatus(status));
-		order.setPeopleAhead(ahead);
+		order.setPeopleAhead(peopleAhead);
 		
 		return true;
 	}
